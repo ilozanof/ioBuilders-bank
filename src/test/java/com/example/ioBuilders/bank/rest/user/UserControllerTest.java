@@ -2,7 +2,6 @@ package com.example.ioBuilders.bank.rest.user;
 
 import com.example.ioBuilders.bank.domain.user.User;
 import com.example.ioBuilders.bank.domain.user.UserServiceImpl;
-import com.example.ioBuilders.bank.rest.user.controller.UserController;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

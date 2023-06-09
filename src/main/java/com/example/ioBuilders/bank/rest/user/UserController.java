@@ -1,4 +1,4 @@
-package com.example.ioBuilders.bank.rest.user.controller;
+package com.example.ioBuilders.bank.rest.user;
 
 import com.example.ioBuilders.bank.domain.user.User;
 import com.example.ioBuilders.bank.domain.user.UserException;
