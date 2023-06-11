@@ -1,11 +1,14 @@
 package com.example.ioBuilders.bank.storage.user;
 
+import com.example.ioBuilders.bank.TestConfiguration;
 import com.example.ioBuilders.bank.domain.user.User;
 import com.example.ioBuilders.bank.domain.user.UserException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+
 
 import java.util.*;
 
@@ -14,13 +17,15 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author i.fernandez@nchain.com
  *
- * Testiung Suite for the User Store Adapter (H2 in-memory DB)
+ * Testing Suite for the User Store Adapter (H2 in-memory DB)
  */
 @SpringBootTest
+@Import(TestConfiguration.class)
 public class UserStoreTest {
 
     @Autowired
-    private UserStore store;
+    private UserStoreForTesting store;
+
 
     @BeforeEach
     private void beforeEach() {

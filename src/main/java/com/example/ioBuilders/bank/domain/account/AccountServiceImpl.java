@@ -6,7 +6,7 @@ import java.util.Optional;
 // TODO: Check MultiThread Stuff!!!!! LOCKS!!!!!!
 public class AccountServiceImpl implements AccountService {
 
-    private AccountStorage accountStorage;
+    protected AccountStorage accountStorage;
     private Integer nextIban = 0;
 
     public AccountServiceImpl(AccountStorage accountStorage) {

@@ -8,5 +8,5 @@ public interface AccountStorage {
     Optional<Account> getAccount(String iban);
     List<Account> getAccounts(String dni);
     List<Account> getAllAccounts();
-    void clear();
+    void updateBalance(String iban, float deltaAmount);
 }

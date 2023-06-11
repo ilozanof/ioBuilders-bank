@@ -28,28 +28,30 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    @GetMapping(path = "/{iban}", produces = "application/json")
-    public ResponseEntity<Account> getAccount(@PathVariable String iban) {
-        Optional<Account> account = accountService.getAccount(iban);
+    @GetMapping(path = "/{accountId}", produces = "application/json")
+    public ResponseEntity<Account> getAccount(@PathVariable String accountId) {
+        Optional<Account> account = accountService.getAccount(accountId);
         return account.isPresent()
                 ? new ResponseEntity<>(account.get(), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(path = "", produces = "application/json")
-    public ResponseEntity<List<Account>> getAllAccounts() {
-        return new ResponseEntity<>(accountService.getAllAccounts(), HttpStatus.OK);
-    }
-
     @PostMapping(path = "")
-    public ResponseEntity<Void> createAccount(@RequestBody String dni) {
+    public ResponseEntity<Void> createAccount(@RequestBody String userId) {
         try {
-            this.accountService.createAccount(dni);
+            this.accountService.createAccount(userId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (AccountException | UserException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping(path = "", produces = "application/json")
+    public ResponseEntity<List<Account>> getAccounts(@RequestParam(required = false) String userId) {
+        return (userId != null)
+                ? new ResponseEntity<>(accountService.getAccounts(userId), HttpStatus.OK)
+                : new ResponseEntity<>(accountService.getAllAccounts(), HttpStatus.OK);
     }
 }

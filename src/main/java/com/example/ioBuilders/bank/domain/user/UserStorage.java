@@ -14,5 +14,4 @@ public interface UserStorage {
     void createUser(User user);
     void removeUser(String dni);
     List<User> getUsers();
-    void clear();
 }

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  */
 public class UserStore implements UserStorage {
 
-    private final UserJpaStore userJpaStore;
+    protected final UserJpaStore userJpaStore;
 
     @Autowired
     public UserStore(UserJpaStore userJpaStore) {
@@ -43,11 +43,6 @@ public class UserStore implements UserStorage {
             throw new UserException(UserException.ERR_ALREADY_REGISTERED);
         }
         userJpaStore.deleteByDni(dni);
-    }
-
-    @Override
-    public void clear() {
-        userJpaStore.deleteAll();
     }
 
     @Override

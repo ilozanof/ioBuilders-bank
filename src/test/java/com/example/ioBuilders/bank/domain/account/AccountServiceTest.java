@@ -1,4 +1,4 @@
-package com.example.ioBuilders.bank.domain.user;
+package com.example.ioBuilders.bank.domain.account;
 
 import com.example.ioBuilders.bank.domain.account.AccountService;
 import com.example.ioBuilders.bank.domain.account.AccountServiceImpl;

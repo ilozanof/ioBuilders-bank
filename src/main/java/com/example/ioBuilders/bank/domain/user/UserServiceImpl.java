@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
 
-    private final UserStorage userStorage;
+    protected final UserStorage userStorage;
 
     public UserServiceImpl(UserStorage userStorage) {
         this.userStorage = userStorage;

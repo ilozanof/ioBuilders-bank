@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
  * Copyright (c) 2018-2023 nChain Ltd
  */
 public class AccountStore implements AccountStorage {
-    private AccountJpaStore accountJpaStore;
-    private UserJpaStore userJpaStore;
+    protected AccountJpaStore accountJpaStore;
+    protected UserJpaStore userJpaStore;
 
     @Autowired
     public AccountStore(AccountJpaStore accountJpaStore,
@@ -29,6 +29,7 @@ public class AccountStore implements AccountStorage {
         this.userJpaStore = userJpaStore;
     }
 
+    // MOVE THIS TO SERVICE!!!!!!
     @Override
     public String createAccount(String dni, String iban) {
         Optional<UserEntity> user = userJpaStore.findByDni(dni);
@@ -65,8 +66,9 @@ public class AccountStore implements AccountStorage {
                 : new ArrayList<>();
     }
 
+
     @Override
-    public void clear() {
-        this.accountJpaStore.deleteAll();
+    public void updateBalance(String iban, float deltaAmount) {
+        this.accountJpaStore.updateBalance(iban, deltaAmount);
     }
 }
