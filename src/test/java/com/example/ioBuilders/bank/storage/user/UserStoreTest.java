@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Testiung Suite for the User Store Adapter (H2 in-memory DB)
  */
 @SpringBootTest
-public class UserStorageImplTest {
+public class UserStoreTest {
 
     @Autowired
     private UserStore store;

@@ -15,4 +15,12 @@
     <bean id="userService" class="com.example.ioBuilders.bank.domain.user.UserServiceImpl">
         <constructor-arg ref="userStorage"/>
     </bean>
+
+    <bean id="accountStorage" class="com.example.ioBuilders.bank.storage.account.AccountStore">
+        <constructor-arg ref="accountJpaStore"/>
+    </bean>
+
+    <bean id="accountService" class="com.example.ioBuilders.bank.domain.account.AccountServiceImpl">
+        <constructor-arg ref="accountStorage"/>
+    </bean>
 </beans>

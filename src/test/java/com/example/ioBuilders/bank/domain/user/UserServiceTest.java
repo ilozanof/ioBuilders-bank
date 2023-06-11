@@ -24,7 +24,7 @@ public class UserServiceTest {
     private UserStorage userStorage;
 
     @Test
-    public void givenUSersAreCreated_thenWeCanGetThem() {
+    public void givenUsersAreCreated_thenWeCanGetThem() {
         when(userStorage.getUsers()).thenReturn(null);
         List<User> users = userService.getUsers();
         System.out.println("End");

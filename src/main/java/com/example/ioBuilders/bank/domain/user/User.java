@@ -1,7 +1,12 @@
 package com.example.ioBuilders.bank.domain.user;
 
+import com.example.ioBuilders.bank.domain.account.Account;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author i.fernandez@nchain.com
@@ -14,4 +19,12 @@ import lombok.Data;
 public final class User {
     private final String dni;
     private final String name;
+    private final List<Account> accounts;
+
+    public User(String dni, String name) {
+        this(dni, name, new ArrayList<>());
+    }
+    public List<Account> getAccounts() {
+        return Collections.unmodifiableList(this.accounts);
+    }
 }

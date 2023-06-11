@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * ADAPTER that implements the PORT USerStorage, providing RDBMS Storage for Users
  */
 public class UserStore implements UserStorage {
-    @Autowired
+
     private final UserJpaStore userJpaStore;
 
     @Autowired
@@ -25,12 +25,12 @@ public class UserStore implements UserStorage {
 
     @Override
     public Optional<User> findUser(String dni) {
-        return userJpaStore.findById(dni).map(UserEntity::toDomain);
+        return userJpaStore.findByDni(dni).map(UserEntity::toDomain);
     }
 
     @Override
     public void createUser(User user) {
-        if (userJpaStore.existsById(user.getDni())) {
+        if (userJpaStore.findByDni(user.getDni()).isPresent()) {
             throw new UserException(UserException.ERR_ALREADY_REGISTERED);
         }
         userJpaStore.save(new UserEntity(user));
@@ -39,7 +39,10 @@ public class UserStore implements UserStorage {
     // TODO: CHECK REMOVING IF RELATIONS EXIST
     @Override
     public void removeUser(String dni) {
-        userJpaStore.deleteById(dni);
+        if (userJpaStore.findByDni(dni).isPresent()) {
+            throw new UserException(UserException.ERR_ALREADY_REGISTERED);
+        }
+        userJpaStore.deleteByDni(dni);
     }
 
     @Override
