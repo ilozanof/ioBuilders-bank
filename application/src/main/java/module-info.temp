@@ -1,0 +1,9 @@
+open module com.ioBuilders.bank.application {
+
+    requires com.ioBuilders.bank.domain;
+    requires com.ioBuilders.bank.infrastructure;
+
+    requires spring.boot;
+    requires spring.boot.autoconfigure;
+    requires spring.context;
+}

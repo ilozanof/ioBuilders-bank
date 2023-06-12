@@ -1,0 +1,8 @@
+logging:
+  level:
+    org:
+      springframework: DEBUG
+spring:
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true

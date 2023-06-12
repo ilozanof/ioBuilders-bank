@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/data/jpa https://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+    <jpa:repositories base-package="com.ioBuilders.bank.infrastructure" />
+
+    <bean id="userStorage" class="com.ioBuilders.bank.infrastructure.user.storage.UserStore">
+        <constructor-arg ref="userJpaStore"/>
+    </bean>
+
+    <bean id="userService" class="com.ioBuilders.bank.domain.user.service.UserServiceImpl">
+        <constructor-arg ref="userStorage"/>
+    </bean>
+
+    <bean id="accountStorage" class="com.ioBuilders.bank.infrastructure.account.storage.AccountStore">
+        <constructor-arg ref="accountJpaStore"/>
+    </bean>
+
+    <bean id="accountService" class="com.ioBuilders.bank.domain.account.service.AccountServiceImpl">
+        <constructor-arg ref="accountStorage"/>
+    </bean>
+
+    <bean id="transactionStorage" class="com.ioBuilders.bank.infrastructure.transaction.storage.TransactionStore">
+        <constructor-arg ref="transactionJpaStore"/>
+    </bean>
+
+    <bean id="transactionService" class="com.ioBuilders.bank.domain.transaction.service.TransactionServiceImpl">
+        <constructor-arg ref="accountStorage"/>
+        <constructor-arg ref="transactionStorage"/>
+    </bean>
+</beans>
