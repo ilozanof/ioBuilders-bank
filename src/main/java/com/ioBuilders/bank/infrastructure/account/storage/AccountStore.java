@@ -56,6 +56,14 @@ public class AccountStore implements AccountStorage {
     }
 
     @Override
+    public Optional<Account> getAccountForUpdate(String iban) {
+        Optional<AccountEntity> accountEntity = this.accountJpaStore.findByIbanForUpdate(iban);
+        return accountEntity.isPresent()
+                ? Optional.of(accountEntity.get().toDomain())
+                : Optional.empty();
+    }
+
+    @Override
     public List<Account> getAccounts(String dni) {
         Optional<UserEntity> user = userJpaStore.findByDni(dni);
         if (user.isEmpty()) {

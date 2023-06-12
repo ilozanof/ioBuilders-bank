@@ -37,18 +37,24 @@ public class TransactionServiceTest {
 
     @Test
     public void given2LocalAccounts_thenICanMoveMoneyBetweenThem() {
-        User user1 = new User("Alice-DNI", "Alice");
-        User user2 = new User("Bob-DNI", "Bob");
+        try {
+            User user1 = new User("Alice-DNI", "Alice");
+            User user2 = new User("Bob-DNI", "Bob");
 
-        userService.createUser(user1);
-        userService.createUser(user2);
-        String account1Id = accountService.createAccount(user1.getDni());
-        String account2Id = accountService.createAccount(user2.getDni());
+            userService.createUser(user1);
+            userService.createUser(user2);
+            String account1Id = accountService.createAccount(user1.getDni());
+            String account2Id = accountService.createAccount(user2.getDni());
 
-        Transaction transaction0 = new Transaction("External Account", account1Id, 50, new Date());
-        transactionService.executeTransaction(transaction0);
+            Transaction transaction0 = new Transaction("External Account", account1Id, 50, new Date());
+            transactionService.executeTransaction(transaction0);
 
-        Transaction transaction1 = new Transaction(account1Id, account2Id, 50, new Date());
-        transactionService.executeTransaction(transaction1);
+            Transaction transaction1 = new Transaction(account1Id, account2Id, 50, new Date());
+            transactionService.executeTransaction(transaction1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+
     }
 }

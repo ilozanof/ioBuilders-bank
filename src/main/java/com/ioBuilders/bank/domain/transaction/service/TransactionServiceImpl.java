@@ -2,6 +2,7 @@ package com.ioBuilders.bank.domain.transaction.service;
 
 import com.ioBuilders.bank.domain.account.model.Account;
 import com.ioBuilders.bank.domain.account.ports.out.AccountStorage;
+import com.ioBuilders.bank.domain.account.service.AccountLockManager;
 import com.ioBuilders.bank.domain.transaction.model.Transaction;
 import com.ioBuilders.bank.domain.transaction.model.TransactionException;
 import com.ioBuilders.bank.domain.transaction.ports.out.TransactionStorage;
@@ -30,9 +31,13 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public void executeTransaction(Transaction transaction) {
 
+        // we LOCK Both Accounts:
+        AccountLockManager.lockAccount(transaction.getOriginAccountId());
+        AccountLockManager.lockAccount(transaction.getDestinationAccountId());
+
         // We get info about both Accounts:
-        Optional<Account> originAccount = this.accountStorage.getAccount(transaction.getOriginAccountId());
-        Optional<Account> destinationAccount = this.accountStorage.getAccount(transaction.getDestinationAccountId());
+        Optional<Account> originAccount = this.accountStorage.getAccountForUpdate(transaction.getOriginAccountId());
+        Optional<Account> destinationAccount = this.accountStorage.getAccountForUpdate(transaction.getDestinationAccountId());
         boolean originInThisBank = originAccount.isPresent();
         boolean destinationInThisBank = destinationAccount.isPresent();
 
@@ -63,6 +68,10 @@ public class TransactionServiceImpl implements TransactionService {
         if (destinationInThisBank) {
             this.accountStorage.updateBalance(transaction.getDestinationAccountId(), transaction.getAmount());
         }
+
+        // We UNLOCK both Accounts:
+        AccountLockManager.releaseAccount(transaction.getOriginAccountId());
+        AccountLockManager.releaseAccount(transaction.getDestinationAccountId());
     }
 
     @Override
