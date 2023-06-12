@@ -6,29 +6,29 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/data/jpa https://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-    <jpa:repositories base-package="com.example.ioBuilders.bank.storage" />
+    <jpa:repositories base-package="com.ioBuilders.bank.infrastructure" />
 
-    <bean id="userStorage" class="com.example.ioBuilders.bank.storage.user.UserStore">
+    <bean id="userStorage" class="com.ioBuilders.bank.infrastructure.user.storage.UserStore">
         <constructor-arg ref="userJpaStore"/>
     </bean>
 
-    <bean id="userService" class="com.example.ioBuilders.bank.domain.user.UserServiceImpl">
+    <bean id="userService" class="com.ioBuilders.bank.domain.user.service.UserServiceImpl">
         <constructor-arg ref="userStorage"/>
     </bean>
 
-    <bean id="accountStorage" class="com.example.ioBuilders.bank.storage.account.AccountStore">
+    <bean id="accountStorage" class="com.ioBuilders.bank.infrastructure.account.storage.AccountStore">
         <constructor-arg ref="accountJpaStore"/>
     </bean>
 
-    <bean id="accountService" class="com.example.ioBuilders.bank.domain.account.AccountServiceImpl">
+    <bean id="accountService" class="com.ioBuilders.bank.domain.account.service.AccountServiceImpl">
         <constructor-arg ref="accountStorage"/>
     </bean>
 
-    <bean id="transactionStorage" class="com.example.ioBuilders.bank.storage.transaction.TransactionStore">
+    <bean id="transactionStorage" class="com.ioBuilders.bank.infrastructure.transaction.storage.TransactionStore">
         <constructor-arg ref="transactionJpaStore"/>
     </bean>
 
-    <bean id="transactionService" class="com.example.ioBuilders.bank.domain.transaction.TransactionServiceImpl">
+    <bean id="transactionService" class="com.ioBuilders.bank.domain.transaction.service.TransactionServiceImpl">
         <constructor-arg ref="accountStorage"/>
         <constructor-arg ref="transactionStorage"/>
     </bean>
