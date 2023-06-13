@@ -4,6 +4,7 @@ import com.ioBuilders.bank.domain.user.model.User;
 import com.ioBuilders.bank.domain.user.model.UserException;
 import com.ioBuilders.bank.domain.user.ports.in.UserService;
 import com.ioBuilders.bank.infrastructure.rest.ResourceNotFoundException;
+import com.ioBuilders.bank.infrastructure.rest.RestApiError;
 import com.ioBuilders.bank.infrastructure.rest.account.AccountController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
@@ -44,14 +45,8 @@ public class UserController {
 
     @PostMapping(path = "")
     public ResponseEntity<UserView> createUser(@RequestBody User user) {
-        try {
-            userService.registerUser(user);
-            return new ResponseEntity<>(toView(user), HttpStatus.OK);
-        } catch (UserException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        userService.registerUser(user);
+        return new ResponseEntity<>(toView(user), HttpStatus.OK);
     }
 
     @GetMapping(path = "", produces = "application/json")

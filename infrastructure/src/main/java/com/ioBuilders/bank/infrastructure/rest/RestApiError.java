@@ -22,4 +22,8 @@ public class RestApiError {
     public RestApiError(HttpStatus status, String message, String error) {
         this(status, message, Arrays.asList(error));
     }
+
+    public static RestApiError fromError(HttpStatus httpStatus, String message) {
+        return new RestApiError(httpStatus, message, (String) null);
+    }
 }
