@@ -10,7 +10,8 @@ import java.util.Date;
 
 /**
  * @author i.fernandez@nchain.com
- * Copyright (c) 2018-2023 nChain Ltd
+ *
+ * View Representation of a Transaction
  */
 public class TransactionView extends RepresentationModel<TransactionView> {
 

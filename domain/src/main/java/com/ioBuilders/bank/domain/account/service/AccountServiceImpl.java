@@ -8,7 +8,6 @@ import com.ioBuilders.bank.domain.account.ports.out.AccountStorage;
 import java.util.List;
 import java.util.Optional;
 
-// TODO: Check MultiThread Stuff!!!!! LOCKS!!!!!!
 public class AccountServiceImpl implements AccountService {
 
     protected AccountStorage accountStorage;
@@ -51,7 +50,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> getAccounts(String dni) {
+    public List<Account> getAccountsByUser(String dni) {
         return this.accountStorage.getAccounts(dni);
     }
 

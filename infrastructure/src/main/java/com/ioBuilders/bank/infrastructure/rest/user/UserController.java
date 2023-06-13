@@ -45,7 +45,7 @@ public class UserController {
     @PostMapping(path = "")
     public ResponseEntity<UserView> createUser(@RequestBody User user) {
         try {
-            userService.createUser(user);
+            userService.registerUser(user);
             return new ResponseEntity<>(toView(user), HttpStatus.OK);
         } catch (UserException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

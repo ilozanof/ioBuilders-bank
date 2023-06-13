@@ -4,7 +4,10 @@ import org.springframework.http.HttpStatus;
 
 /**
  * @author i.fernandez@nchain.com
- * Copyright (c) 2018-2023 nChain Ltd
+ *
+ * Exception triggered when a Resource is not Found. Depending on the Use Case, this might be:
+ * - NOT_FOUND: If the use case is a search
+ * - BAD_REQUEST: If the operations relies on some darta and any of them is NOT Found.
  */
 public class ResourceNotFoundException extends RuntimeException {
     private HttpStatus httpStatus;
@@ -12,6 +15,5 @@ public class ResourceNotFoundException extends RuntimeException {
         super(resourceName);
         this.httpStatus = httpStatus;
     }
-
     public HttpStatus getHttpStatus() { return this.httpStatus;}
 }

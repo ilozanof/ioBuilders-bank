@@ -25,7 +25,6 @@ public class UserEntity {
     private String dni;
     private String name;
 
-    // TODO: This CASXCADE Is WRONG. WE SHOULD CHECK IF THERE ARE ACCOUNTS BEFORE REMOVING THE USER. ENOUGH FOR THIS POC?
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccountEntity> accounts = new ArrayList<>();
 

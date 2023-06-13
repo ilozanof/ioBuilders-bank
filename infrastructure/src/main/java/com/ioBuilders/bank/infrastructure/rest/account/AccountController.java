@@ -82,6 +82,6 @@ public class AccountController {
         if (user.isEmpty()) {
             throw new ResourceNotFoundException(HttpStatus.NOT_FOUND, "User");
         }
-        return new ResponseEntity<>(accountService.getAccounts(userId).stream().map(a -> toView(a)).collect(Collectors.toList()), HttpStatus.OK);
+        return new ResponseEntity<>(accountService.getAccountsByUser(userId).stream().map(a -> toView(a)).collect(Collectors.toList()), HttpStatus.OK);
     }
 }

@@ -1,38 +1,20 @@
 package com.ioBuilders.bank.infrastructure.rest;
 
 import com.ioBuilders.bank.domain.account.model.AccountException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author i.fernandez@nchain.com
- * Copyright (c) 2018-2023 nChain Ltd
+ *
+ * Custom Exception Handler
  */
 
 @ControllerAdvice
 public class CustomRestExceptionHandler {
-//    @ExceptionHandler(Exception.class)
-//    protected ResponseEntity<Object> handleException(Exception ex) {
-//        List<String> errors = new ArrayList<>();
-////        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-////            errors.add(error.getField() + ": " + error.getDefaultMessage());
-////        }
-////        for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
-////            errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
-////        }
-//
-//        return new ResponseEntity(new RestApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors), HttpStatus.BAD_REQUEST);
-//    }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     protected ResponseEntity<RestApiError> handleMethodArgumentNotValid(MethodArgumentTypeMismatchException ex) {

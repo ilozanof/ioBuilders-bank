@@ -7,9 +7,11 @@ import lombok.Data;
 /**
  * @author i.fernandez@nchain.com
  *
- * An Account is linked to one Client of the Bank. It contains a Balance
+ * An Account is linked to one Client of the Bank.
+ * Transaction from/to an Account might be considerable, so Transactions are not stored here and they should be
+ * retreived independently in a Paginated way.
+ *
  * This class is immutable
- * // TODO: Add ref to TRansactions too
  */
 @Data
 @AllArgsConstructor

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author i.fernandez@nchain.com
- * Copyright (c) 2018-2023 nChain Ltd
+ *
  */
 public class TransactionStore implements TransactionStorage {
     private final int PAGE_SIZE = 10;

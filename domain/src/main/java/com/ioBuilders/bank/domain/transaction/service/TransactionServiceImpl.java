@@ -18,7 +18,14 @@ import java.util.Optional;
 
 /**
  * @author i.fernandez@nchain.com
- * Copyright (c) 2018-2023 nChain Ltd
+ *
+ * An implementation of {@link TransactionService}
+ * This class implements Concurrency art ACCOUNT-Level, not at Class Level or using a Local Lock.
+ * For every pair of Accounts involved in a Transaction, a LOCK is created and held. When the Tx is done, the Lock is
+ * released. The Lock also keeps tracxk of the number of Transactions trying to exdecugte suing the same Pair of
+ * Accounts.
+ *
+ * The Locking logic is implemented in {@link AccountLockManager}
  */
 @Slf4j
 public class TransactionServiceImpl implements TransactionService {
@@ -32,13 +39,20 @@ public class TransactionServiceImpl implements TransactionService {
         this.transactionStorage = transactionStorage;
     }
 
+    /**
+     * It executes a Tx, updating both Balances and running sanity checks.
+     * This method assumes that it is Thread-Safe (Calls will go through "executeTransaction", which is the one that
+     * acquires the Lock.
+     */
     protected int runTransactionSafely(TransactionRequest transactionReq) {
         log.trace("Tx Running Safely: [id: {}] [from: {} ] [to: {}] [amount:{}] ",
                 transactionReq.getId(),
                 transactionReq.getOriginAccountId(), transactionReq.getDestinationAccountId(), transactionReq.getAmount());
+
         // We get info about both Accounts:
         Optional<Account> originAccount = this.accountService.getAccountAndLock(transactionReq.getOriginAccountId());
         Optional<Account> destinationAccount = this.accountService.getAccountAndLock(transactionReq.getDestinationAccountId());
+
         boolean originInThisBank = originAccount.isPresent();
         boolean destinationInThisBank = destinationAccount.isPresent();
 
@@ -78,6 +92,10 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
+    /**
+     * It executes the Transaction, moving money between 2 Accounts, applying a LOCK at the Pair of Txs so multiple
+     * Txs can be executed safely in a Multi-Thread environment.
+     */
     @Transactional
     @Override
     public int executeTransaction(TransactionRequest transactionReq) {
@@ -97,22 +115,23 @@ public class TransactionServiceImpl implements TransactionService {
 
         // we LOCK Both Accounts:
 
-            AccountLockManager.getAccountLock(transactionReq.getOriginAccountId(), transactionReq.getDestinationAccountId()).lock();
-            //AccountLockManager.getAccountLock(transactionReq.getDestinationAccountId()).lock();
-
-
+        AccountLockManager.getAccountLock(
+                transactionReq.getOriginAccountId(),
+                transactionReq.getDestinationAccountId())
+                .lock();
 
         int transactionId = runTransactionSafely(transactionReq);
 
         // We UNLOCK both Accounts:
-
-            AccountLockManager.releaseAccountLock(transactionReq.getOriginAccountId(), transactionReq.getDestinationAccountId());
-            //AccountLockManager.releaseAccountLock(transactionReq.getDestinationAccountId());
+        AccountLockManager.releaseAccount(
+                transactionReq.getOriginAccountId(),
+                transactionReq.getDestinationAccountId());
 
 
         log.debug("Tx Done: [id: {}] [from: {} ] [to: {}] [amount:{}] ",
                 transactionReq.getId(),
                 transactionReq.getOriginAccountId(), transactionReq.getDestinationAccountId(), transactionReq.getAmount());
+
         // We return the TransactionId of the transaction created:
         return transactionId;
     }

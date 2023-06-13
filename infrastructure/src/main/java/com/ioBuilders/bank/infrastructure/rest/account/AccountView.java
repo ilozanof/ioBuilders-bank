@@ -5,7 +5,8 @@ import org.springframework.hateoas.RepresentationModel;
 
 /**
  * @author i.fernandez@nchain.com
- * Copyright (c) 2018-2023 nChain Ltd
+ *
+ * View Representation of an Account
  */
 public class AccountView extends RepresentationModel<AccountView> {
     private Account account;

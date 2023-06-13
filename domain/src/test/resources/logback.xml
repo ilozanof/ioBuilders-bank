@@ -28,9 +28,9 @@
     </appender>
 
     <!-- Set logging for root to INFO -->
-    <logger name="root" level="DEBUG"/>
+    <logger name="root" level="TRACE"/>
 
-    <root level="DEBUG">
+    <root level="TRACE">
         <appender-ref ref="ASYNCSTDOUT"/>
         <appender-ref ref="ASYNCFILE"/>
     </root>

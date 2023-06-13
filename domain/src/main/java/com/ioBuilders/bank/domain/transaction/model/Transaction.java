@@ -10,7 +10,7 @@ import java.util.Objects;
  * @author i.fernandez@nchain.com
  *
  * A Transaction represents a movement of money from one Account to another.
- * Accounts might NOT belong to this Bank.
+ * Accounts might NOT belong to this Bank, but al leasrt one of them MUST
  *
  * This class is immutable
  */

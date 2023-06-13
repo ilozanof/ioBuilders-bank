@@ -36,15 +36,6 @@ public class UserStore implements UserStorage {
         userJpaStore.save(new UserEntity(user));
     }
 
-    // TODO: CHECK REMOVING IF RELATIONS EXIST
-    @Override
-    public void removeUser(String dni) {
-        if (userJpaStore.findByDni(dni).isPresent()) {
-            throw new UserException(UserException.ERR_ALREADY_REGISTERED);
-        }
-        userJpaStore.deleteByDni(dni);
-    }
-
     @Override
     public List<User> getUsers() {
         return userJpaStore.findAll().stream().map(UserEntity::toDomain).collect(Collectors.toList());

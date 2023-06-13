@@ -6,6 +6,12 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 
+/**
+ * @author i.fernandez@nchain.com
+ *
+ * Spring REST Bank Application.
+ * It only wires the "domain" and "infrastructure" modules up together and launches a Web Server.
+ */
 @SpringBootApplication
 @ImportResource({"classpath*:applicationContext.xml"})
 @ComponentScan(basePackages = "com.ioBuilders.bank")

@@ -9,12 +9,14 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author i.fernandez@nchain.com
- * Copyright (c) 2018-2023 nChain Ltd
+ *
+ * A Request to create a Transaction (moving money between 2 accounts)
  */
 @Data
 public class TransactionRequest {
     private static AtomicLong REQUEST_ID = new AtomicLong();
-    private long id = 0;
+
+    private long id = 0; // incremental
     private String originAccountId;
     private String destinationAccountId;
     private float amount;

@@ -30,7 +30,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author i.fernandez@nchain.com
- * Copyright (c) 2018-2023 nChain Ltd
+ *
+ * The TransactionService is the Only Service in the Domain Module that contains some business logic besides the
+ * WRITE/READ operations in the Store (Whioch will be tested in the 'infrastrcuture' module.
+ * Here we test the Muilti-thread and Lock capabilities of the TransactionService so we Prove Txs can be run
+ * concurrentely in a safe manner.
  */
 
 @ExtendWith(MockitoExtension.class)
@@ -45,6 +49,12 @@ public class TransactionServiceTest {
     @Mock
     private TransactionStorage transactionStorage;
 
+    /**
+     * In this test we define 2 dummy users, each one with one Account, and we start executing Transactions sending
+     * money between them in a Concurrently environment, triggering several Transactions in parallel.
+     * The Thread.Safety implemented in {@link TransactionServiceImpl} will guarantee that the balances at the end
+     * of the Run are consistent.
+     */
     @Test
     public void givenSeveralTransactions_thenICanExecuteThemInParallel() throws Exception {
 
@@ -52,10 +62,11 @@ public class TransactionServiceTest {
         final Float     INITIAL_DEPOSIT = 1000.0F;
         final Integer   NUM_TRANSFERS_ALICE_TO_BOB = 10;
         final Integer   NUM_TRANSFERS_BOB_TO_ALICE = 10;
-        final Float     AMOUNT_TRANSFER_BOB_TO_ALICE = 5f;
-        final Float     AMOUNT_TRANSFER_ALICE_TO_BOB = 10f;
+        final Float     AMOUNT_TRANSFER_BOB_TO_ALICE = 5f;  // on each Tx
+        final Float     AMOUNT_TRANSFER_ALICE_TO_BOB = 10f; // on each Tx
         final Integer   NUM_THREADS = 10;
 
+        // We can calculate din Advance the Expected Balance in both Accounts at the end of the Test:
         final Float EXPECTED_BALANCE_ALICE = INITIAL_DEPOSIT
                 - (NUM_TRANSFERS_ALICE_TO_BOB * AMOUNT_TRANSFER_ALICE_TO_BOB)
                 + (NUM_TRANSFERS_BOB_TO_ALICE * AMOUNT_TRANSFER_BOB_TO_ALICE);
@@ -64,34 +75,38 @@ public class TransactionServiceTest {
                 - (NUM_TRANSFERS_BOB_TO_ALICE * AMOUNT_TRANSFER_BOB_TO_ALICE)
                 + (NUM_TRANSFERS_ALICE_TO_BOB * AMOUNT_TRANSFER_ALICE_TO_BOB);
 
-
-        User aliceUSer = new User("A0", "Alice");
-        User bobUSer = new User("B0", "Bob");
-
+        // We create our Users and Accounts: Alice and Bob
+        User aliceUSer       = new User("A0", "Alice");
+        User bobUSer         = new User("B0", "Bob");
         Account aliceAccount = new Account(aliceUSer, "IBAN-A-1", INITIAL_DEPOSIT);
-        Account bobAccount = new Account(bobUSer, "IBAN-B-1", INITIAL_DEPOSIT);
+        Account bobAccount   = new Account(bobUSer, "IBAN-B-1", INITIAL_DEPOSIT);
 
+        // We keep a real-time copy of both Balances as they keep changing during the Test:
+        // key -> accountID, Value -> current Balance:
         Map<String, AtomicLong> BALANCES = new HashMap<>() {{
             put(aliceAccount.getAccountId(), new AtomicLong((long) aliceAccount.getBalance()));
             put(bobAccount.getAccountId(), new AtomicLong((long) bobAccount.getBalance()));
         }};
 
+        // We don't have Store capabilities, so we mock them:
         when(accountService.isAccountValid(any())).thenReturn(true);
         when(accountService.getAccountAndLock(aliceAccount.getAccountId())).thenReturn(Optional.of(aliceAccount));
         when(accountService.getAccountAndLock(bobAccount.getAccountId())).thenReturn(Optional.of(bobAccount));
+        when(transactionStorage.createTransaction(any())).thenReturn(0);
 
+        // When the Balance is going ot be updated in the Store, we intercept it and update our Map instead:
         doAnswer(req -> {
             BALANCES.get(req.getArgument(0)).addAndGet(((Float) req.getArgument(1)).longValue());
             return null;
         }).when(accountService).updateBalance(anyString(), anyFloat());
 
-        when(transactionStorage.createTransaction(any())).thenReturn(0);
+        // Each Tx wil run in a different Thread -> Runnable:
+        Runnable bobSendsToAlice = () -> transactionService.executeTransaction(
+                new TransactionRequest(bobAccount.getAccountId(), aliceAccount.getAccountId(), AMOUNT_TRANSFER_BOB_TO_ALICE, new Date()));
+        Runnable aliceSendsToBob = () -> transactionService.executeTransaction(
+                new TransactionRequest(aliceAccount.getAccountId(), bobAccount.getAccountId(), AMOUNT_TRANSFER_ALICE_TO_BOB, new Date()));
 
-        Runnable bobSendsToAlice = () -> transactionService
-                .executeTransaction(new TransactionRequest(bobAccount.getAccountId(), aliceAccount.getAccountId(), AMOUNT_TRANSFER_BOB_TO_ALICE, new Date()));
-        Runnable aliceSendsToBob = () -> transactionService
-                .executeTransaction(new TransactionRequest(aliceAccount.getAccountId(), bobAccount.getAccountId(), AMOUNT_TRANSFER_ALICE_TO_BOB, new Date()));
-
+        // We trigger all the Tx using a Thread pool:
         ExecutorService executor = Executors.newFixedThreadPool(NUM_THREADS);
         int maxIterations = Math.max(NUM_TRANSFERS_ALICE_TO_BOB, NUM_TRANSFERS_BOB_TO_ALICE);
         int numTxsBobToAlice = 0;
@@ -109,7 +124,8 @@ public class TransactionServiceTest {
                 executor.submit(aliceSendsToBob);
             }
         }
-        executor.awaitTermination(5, TimeUnit.SECONDS);
+        // We wait a bit and then we compare results:
+        executor.awaitTermination(2, TimeUnit.SECONDS);
 
         log.info("Alice Expected Balance: {}", EXPECTED_BALANCE_ALICE);
         log.info("Alice Balance: {}", BALANCES.get(aliceAccount.getAccountId()));
@@ -119,41 +135,4 @@ public class TransactionServiceTest {
         assertEquals(EXPECTED_BALANCE_ALICE, BALANCES.get(aliceAccount.getAccountId()).floatValue());
         assertEquals(EXPECTED_BALANCE_BOB, BALANCES.get(bobAccount.getAccountId()).floatValue());
     }
-
-//    @Autowired
-//    private TransactionServiceForTesting transactionService;
-//    @Autowired
-//    private UserServiceForTesting userService;
-//    @Autowired
-//    private AccountServiceForTesting accountService;
-//
-//    @BeforeEach
-//    private void setup() {
-//        transactionService.clear();
-//        accountService.clear();
-//        userService.clear();
-//    }
-//
-//    @Test
-//    public void given2LocalAccounts_thenICanMoveMoneyBetweenThem() {
-//        try {
-//            User user1 = new User("Alice-DNI", "Alice");
-//            User user2 = new User("Bob-DNI", "Bob");
-//
-//            userService.createUser(user1);
-//            userService.createUser(user2);
-//            String account1Id = accountService.createAccount(user1.getDni());
-//            String account2Id = accountService.createAccount(user2.getDni());
-//
-//            Transaction transaction0 = new Transaction("External Account", account1Id, 50, new Date());
-//            transactionService.executeTransaction(transaction0);
-//
-//            Transaction transaction1 = new Transaction(account1Id, account2Id, 50, new Date());
-//            transactionService.executeTransaction(transaction1);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw e;
-//        }
-//
-//    }
 }

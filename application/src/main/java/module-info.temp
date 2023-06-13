@@ -1,3 +1,9 @@
+// NOTE:
+// This Module is disabled because Spring Boot makes intensively use of Reflection and the Java 9 Modules
+// don't like that very much. We leave this here this way for now, it doesn't affect the behaviour of the project.
+
+// The "domain" and "infrastructure" modules are properly configured as Java 9 Modules.
+
 open module com.ioBuilders.bank.application {
 
     requires com.ioBuilders.bank.domain;

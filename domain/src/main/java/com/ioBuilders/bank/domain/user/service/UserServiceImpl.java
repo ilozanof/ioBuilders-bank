@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void createUser(User user) {
+    public void registerUser(User user) {
         if (userStorage.containsUser(user.getDni())) {
             throw new UserException(UserException.ERR_ALREADY_REGISTERED);
         }
