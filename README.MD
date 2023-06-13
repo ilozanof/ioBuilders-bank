@@ -252,6 +252,18 @@ To achieve this, we have developed a LOCK mechanism at 2 levels:
   Transaction starts running, and it remains Locked until the Transaction is finished, so the data of that dow can not be read or Write during
   that time.
 
+#### Other Security Considerations
+During Testing, it very frequent that we need to *remove* or *clean* the data between tests. So there is usually a 
+"*clean()*", "*removeAll()*" or similar method in our Services. This is ok as long as the development team is aware that 
+those methods SHOULD NOT be used in Production code, ever.
+
+If we want to make this more strict, we can **remove** those methods from the */main* module and add them *ONLY* to the 
+*/test* module. This is also ok since those methods can never be run in Production, since a lot of security checks must 
+be followed nd we'll *never* remove the whole set of *Users/Account/Transaction", but selectively instead. In this projects, 
+these "*dangerous*" methods have been added to specific classes used only for Testing: *AccountStoreForTesting*, *TransactionStoreForTesting* 
+and *UserStoreForTesting*.
+
+
 > NOTE:
 > The Lock at Business-level is implemented in *TransactionServiceImpl* and *AccountLockManager*.
 
