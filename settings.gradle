@@ -1,0 +1,5 @@
+rootProject.name = 'ioBuilders-bank'
+
+include 'domain'
+include 'infrastructure'
+include 'application'
