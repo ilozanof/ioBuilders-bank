@@ -2,8 +2,8 @@
 
 1. [Introduction](#introduction)
 2. [Requirements](#requirements)
-3. [How to Compile and Deploy](#How to Compile and Deploy)
-4. [Using the REST API](#Using the REST API)
+3. [How to Compile and Deploy](#How-to-Compile-and-Deploy)
+4. [Using the REST API](#Using-the-REST-API)
 5. [Architecture](#Architecture) 
 
 
@@ -200,9 +200,9 @@ between 2 *Accounts* of this Bank, but one of the 2 *Account* (origin or destina
 - **External Account**: An Account NOT registered in this Bank. External Account are not controlled by this APi and we can NOT 
 affect the Balance of this external Accounts, but an "Account Check" is performed.
 - **Account Check**: A verification process that indicates if an *Account* can take part in a *Transaction*. An account is considered *Valid* if 
-it fullfills one of 2 checks: a) it belong toi *This* bank, or b) it does **not** belong to this bank, but its *ID* complais with the "
+it full fills one of 2 checks: a) it belong toi *This* bank, or b) it does **not** belong to this bank, but its *ID* complais with the "
 *External Account Id Rule*
-- **External Account Id Rule**: A rujle that specifies that the *Id* of an *External Account* MUST starts with "*EXTERNAL-*".
+- **External Account Id Rule**: A rule that specifies that the *Id* of an *External Account* MUST starts with "*EXTERNAL-*".
 
 ### Hexagonal Architecture
 
@@ -211,7 +211,7 @@ The project is broken down into different components following a hexagonal archi
 
 ![architecture](architecture.jpg)
 
-The project contains 3 modules: *domain*, *infrastructure* and *application*, and each one is dividen further 
+The project contains 3 modules: *domain*, *infrastructure* and *application*, and each one is divided further 
 down following the *bounded context* defined (*User*, *Account*, *Transaction*).
 
 The *Domain* modules defines several ports:
@@ -219,8 +219,8 @@ The *Domain* modules defines several ports:
 - *[IN]*: A *Primary* port that exposes the Bank Functionality. This port will be used by the *consuming* apps/systems of this Bank.
 - *[OUT]: A *Secondary* port that defines *Storage capabilities*, needed by the Bank business logic.
 
-> NOTE: The Ports, same as with the *domain* model itself, have been broken down solloing th bounded contexts defined. 
-> **It might have also been a good ide ot integrate all the [IN] ports inot an unified Port, and the same for
+> NOTE: The Ports, same as with the *domain* model itself, have been broken down following the bounded contexts defined. 
+> **It might have also been a good ide ot integrate all the [IN] ports into a unified Port, and the same for
 > the [OUT] ports**.
 
 
@@ -244,8 +244,8 @@ prevents some errors to happen, but it only works inside the same *Java Virtual 
 another level of security has been developed (below):
 
 - In the Storage Layer, we implemented a *PESSIMISTIC LOCK* at DB level, so the *Row* of a Transaction is Locked when a 
-Transaction starts running, and it remains Locked until the Transaction is finised, so the Data of that Row can not be read or Write during 
+Transaction starts running, and it remains Locked until the Transaction is finished, so the data of that dow can not be read or Write during 
 that time.
 
 > NOTE:
-> The Lock at Business-level is implemented in **TransactionServiceImpl** and *AccountLockManager**.
+> The Lock at Business-level is implemented in *TransactionServiceImpl* and *AccountLockManager*.
