@@ -8,7 +8,7 @@
 
     <jpa:repositories base-package="com.ioBuilders.bank.infrastructure" />
 
-    <bean id="userStorage" class="com.ioBuilders.bank.infrastructure.user.storage.UserStore">
+    <bean id="userStorage" class="com.ioBuilders.bank.infrastructure.storage.user.UserStore">
         <constructor-arg ref="userJpaStore"/>
     </bean>
 
@@ -16,7 +16,7 @@
         <constructor-arg ref="userStorage"/>
     </bean>
 
-    <bean id="accountStorage" class="com.ioBuilders.bank.infrastructure.account.storage.AccountStore">
+    <bean id="accountStorage" class="com.ioBuilders.bank.infrastructure.storage.account.AccountStore">
         <constructor-arg ref="accountJpaStore"/>
     </bean>
 
@@ -24,12 +24,12 @@
         <constructor-arg ref="accountStorage"/>
     </bean>
 
-    <bean id="transactionStorage" class="com.ioBuilders.bank.infrastructure.transaction.storage.TransactionStore">
+    <bean id="transactionStorage" class="com.ioBuilders.bank.infrastructure.storage.transaction.TransactionStore">
         <constructor-arg ref="transactionJpaStore"/>
     </bean>
 
     <bean id="transactionService" class="com.ioBuilders.bank.domain.transaction.service.TransactionServiceImpl">
-        <constructor-arg ref="accountStorage"/>
+        <constructor-arg ref="accountService"/>
         <constructor-arg ref="transactionStorage"/>
     </bean>
 </beans>

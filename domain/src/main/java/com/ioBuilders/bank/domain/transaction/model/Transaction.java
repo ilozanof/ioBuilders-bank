@@ -15,12 +15,24 @@ import java.util.Objects;
  * This class is immutable
  */
 @Data
-@AllArgsConstructor
 public class Transaction {
+    private int id;
     private final String originAccountId;
     private final String destinationAccountId;
     private final float amount;
     private final Date date;
+
+    public Transaction(int id, String originAccountId, String destinationAccountId, float amount, Date date) {
+        this.id = id;
+        this.originAccountId = originAccountId;
+        this.destinationAccountId = destinationAccountId;
+        this.amount = amount;
+        this.date = date;
+    }
+
+    public Transaction(String originAccountId, String destinationAccountId, float amount, Date date) {
+        this(0, originAccountId, destinationAccountId, amount, date);
+    }
 
     @Override
     public int hashCode() {

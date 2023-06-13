@@ -1,14 +1,13 @@
 module com.ioBuilders.bank.infrastructure {
     requires transitive com.ioBuilders.bank.domain;
 
-    exports com.ioBuilders.bank.infrastructure.user.rest;
-    exports com.ioBuilders.bank.infrastructure.user.storage;
+    exports com.ioBuilders.bank.infrastructure.rest.user;
+    exports com.ioBuilders.bank.infrastructure.rest.account;
+    exports com.ioBuilders.bank.infrastructure.rest.transaction;
 
-    exports com.ioBuilders.bank.infrastructure.account.rest;
-    exports com.ioBuilders.bank.infrastructure.account.storage;
-
-    exports com.ioBuilders.bank.infrastructure.transaction.rest;
-    exports com.ioBuilders.bank.infrastructure.transaction.storage;
+    exports com.ioBuilders.bank.infrastructure.storage.user;
+    exports com.ioBuilders.bank.infrastructure.storage.account;
+    exports com.ioBuilders.bank.infrastructure.storage.transaction;
 
     requires lombok;
     requires spring.beans;
@@ -16,4 +15,5 @@ module com.ioBuilders.bank.infrastructure {
     requires spring.data.commons;
     requires spring.data.jpa;
     requires jakarta.persistence;
+    requires spring.hateoas;
 }

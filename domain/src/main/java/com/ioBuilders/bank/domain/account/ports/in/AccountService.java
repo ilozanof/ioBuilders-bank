@@ -11,8 +11,11 @@ import java.util.Optional;
  * Operations allowed on Accounts
  */
 public interface AccountService {
+    boolean isAccountValid(String accountId);
     List<Account> getAllAccounts();
     String createAccount(String dni);
-    Optional<Account> getAccount(String iban);
+    Optional<Account> getAccount(String accountId);
+    Optional<Account> getAccountAndLock(String accountId);
     List<Account> getAccounts(String dni);
+    void updateBalance(String accountId, float delta);
 }

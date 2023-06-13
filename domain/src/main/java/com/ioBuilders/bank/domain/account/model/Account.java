@@ -1,5 +1,6 @@
 package com.ioBuilders.bank.domain.account.model;
 
+import com.ioBuilders.bank.domain.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -13,8 +14,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Account {
-    private String iban;
+    private User user;
+    private String accountId;
     private float balance;
 
-    // TODO: Put here a Rerference to the User???
 }

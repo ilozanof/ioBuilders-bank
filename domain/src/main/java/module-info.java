@@ -14,4 +14,7 @@ module com.ioBuilders.bank.domain {
     requires lombok;
     requires spring.tx;
     requires java.desktop;
+    requires junit;
+    requires org.mockito;
+    requires org.slf4j;
 }
