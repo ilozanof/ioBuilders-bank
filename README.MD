@@ -197,15 +197,15 @@ and the *Technical Part*: We have defined the following concepts:
 - **User**: It represents a Physical person in the real word. A User that registers in the Bank becomes a *Client* of the
   bank. One single User can open multiple *Accounts* in the Bank.
 - **Account**: It represents a Placeholder that contains a *Balance* and a *list* of *Transactions*. The *Balance* represents the
-  sum of all the *transactions* executed on that *Account*. An *Account* *MUST belong ONLY to ONE *User*. Anm *Account* might have any
+  sum of all the *transactions* executed on that *Account*. An *Account* MUST belong ONLY to ONE *User*. An *Account* might have any
   *balance* as long is it is equal or greater than ZERO(0).
 - **Transfer**: A *Transfer* is the movement of Money from one *Account* (origin) to another (destination). A *Transaction* can be done
   between 2 *Accounts* of this Bank, but one of the 2 *Account* (origin or destination) might belong to an *External* Bank.
 - **Internal Account**: An Account registered in this Bank.
-- **External Account**: An Account NOT registered in this Bank. External Account are not controlled by this APi and we can NOT
-  affect the Balance of this external Accounts, but an "Account Check" is performed.
+- **External Account**: An Account NOT registered in this Bank. External Accounts are not controlled by this API and we can NOT
+  affect the Balance of this external Accounts, but an *Account Check* is performed.
 - **Account Check**: A verification process that indicates if an *Account* can take part in a *Transaction*. An account is considered *Valid* if
-  it full fills one of 2 checks: a) it belong toi *This* bank, or b) it does **not** belong to this bank, but its *ID* complais with the "
+  it full fills one of 2 checks: a) it belongs to *This* bank, or b) it does **not** belong to this bank, but its *ID* complies with the 
   *External Account Id Rule*
 - **External Account Id Rule**: A rule that specifies that the *Id* of an *External Account* MUST starts with "*EXTERNAL-*".
 
@@ -222,7 +222,7 @@ down following the *bounded context* defined (*User*, *Account*, *Transaction*).
 The *Domain* modules defines several ports:
 
 - *[IN]*: A *Primary* port that exposes the Bank Functionality. This port will be used by the *consuming* apps/systems of this Bank.
-- *[OUT]: A *Secondary* port that defines *Storage capabilities*, needed by the Bank business logic.
+- *[OUT]*: A *Secondary* port that defines *Storage capabilities*, needed by the Bank business logic.
 
 > NOTE: The Ports, same as with the *domain* model itself, have been broken down following the bounded contexts defined.
 > **It might have also been a good ide ot integrate all the [IN] ports into a unified Port, and the same for
@@ -251,6 +251,18 @@ To achieve this, we have developed a LOCK mechanism at 2 levels:
 - In the Storage Layer, we implemented a *PESSIMISTIC LOCK* at DB level, so the *Row* of a Transaction is Locked when a
   Transaction starts running, and it remains Locked until the Transaction is finished, so the data of that dow can not be read or Write during
   that time.
+
+#### Other Security Considerations
+During Testing, it very frequent that we need to *remove* or *clean* the data between tests. So there is usually a 
+"*clean()*", "*removeAll()*" or similar method in our Services. This is ok as long as the development team is aware that 
+those methods SHOULD NOT be used in Production code, ever.
+
+If we want to make this more strict, we can **remove** those methods from the */main* module and add them *ONLY* to the 
+*/test* module. This is also ok since those methods can never be run in Production, since a lot of security checks must 
+be followed nd we'll *never* remove the whole set of *Users/Account/Transaction", but selectively instead. In this projects, 
+these "*dangerous*" methods have been added to specific classes used only for Testing: *AccountStoreForTesting*, *TransactionStoreForTesting* 
+and *UserStoreForTesting*.
+
 
 > NOTE:
 > The Lock at Business-level is implemented in *TransactionServiceImpl* and *AccountLockManager*.
