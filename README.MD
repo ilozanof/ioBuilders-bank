@@ -4,16 +4,16 @@
 2. [Requirements](#requirements)
 3. [How to Compile and Deploy](#How-to-Compile-and-Deploy)
 4. [Using the REST API](#Using-the-REST-API)
-5. [Architecture](#Architecture) 
+5. [Architecture](#Architecture)
 
 
 ## Introduction
 
-This project implements REST API with the limited functionalities of a Bank. 
-You can create *Users*, *Accounts* an execute *Transactions* of money between 2 Accounts. 
+This project implements REST API with the limited functionalities of a Bank.
+You can create *Users*, *Accounts* an execute *Transactions* of money between 2 Accounts.
 
-The project is packaged as an auto-executable *Jar* but it can be deployed and run in 
-isolation in a *Docker* container as explained below. 
+The project is packaged as an auto-executable *Jar* but it can be deployed and run in
+isolation in a *Docker* container as explained below.
 
 ## Requirements
 
@@ -76,9 +76,9 @@ http://localhost:8080/swagger-ui/index.html
 ```
 ## Using the REST API
 
-> NOTE: 
+> NOTE:
 > All the REST Endpoints returns a rich response containing the Http Status code and HATEOAS Links
-> The use fo HATEOAS comes with some impact in performance. It is OK in this *POC* but in a *Production* it should be considered carefully. 
+> The use fo HATEOAS comes with some impact in performance. It is OK in this *POC* but in a *Production* it should be considered carefully.
 
 Create a User for *Alice* and *Bob*:
 ```
@@ -97,7 +97,7 @@ curl -X POST http://localhost:8080/v1/accounts -H 'Content-Type: application/jso
 
 Now we are funding both account with some fictional balance with 2 transfers from some out-of-the-blue external Accounts:
 
-> NOTE: As it will explained in the *Architecture* Chapter, a *deposit* is considered like a regular Transaction, but the 
+> NOTE: As it will explained in the *Architecture* Chapter, a *deposit* is considered like a regular Transaction, but the
 > *Origin Transaction* if from an *EXTERNAL* Account.
 ```
 curl -X POST http://localhost:8080/v1/transactions -H 'Content-Type: application/json' -d '{"originAccountId":"EXTERNAL-xxx", "destinationAccountId": "IBAN-xxxx-xxxx-xxx-1", "amount": 1000, "date": "2024-01-01"}'
@@ -108,7 +108,7 @@ curl -X POST http://localhost:8080/v1/transactions -H 'Content-Type: application
 
 Now we can start moving Money around.
 
-We send 100 coins from *Alice* to *Bob*. 
+We send 100 coins from *Alice* to *Bob*.
 ```
 curl -X POST http://localhost:8080/v1/transactions -H 'Content-Type: application/json' -d '{"originAccountId":"IBAN-xxxx-xxxx-xxx-1", "destinationAccountId": "IBAN-xxxx-xxxx-xxx-2", "amount": 100, "date": "2024-01-01"}'
 ```
@@ -191,22 +191,22 @@ Following the *DDD* Pattern, we define the following *Bounded Contexts*:
 3. *Transactions*
 
 All of them have enough importance to be treated as a separate entity, but they obviously have relationships with each other.
-The *Ubiquitous Language* define for this project will help clarify concepts and will work as a *bridge* between the *business* 
+The *Ubiquitous Language* define for this project will help clarify concepts and will work as a *bridge* between the *business*
 and the *Technical Part*: We have defined the following concepts:
 
-- **User**: It represents a Physical person in the real word. A User that registers in the Bank becomes a *Client* of the 
-bank. One single User can open multiple *Accounts* in the Bank.
-- **Account**: It represents a Placeholder that contains a *Balance* and a *list* of *Transactions*. The *Balance* represents the 
-sum of all the *transactions* executed on that *Account*. An *Account* *MUST belong ONLY to ONE *User*. Anm *Account* might have any 
-*balance* as long is it is equal or greater than ZERO(0).
+- **User**: It represents a Physical person in the real word. A User that registers in the Bank becomes a *Client* of the
+  bank. One single User can open multiple *Accounts* in the Bank.
+- **Account**: It represents a Placeholder that contains a *Balance* and a *list* of *Transactions*. The *Balance* represents the
+  sum of all the *transactions* executed on that *Account*. An *Account* *MUST belong ONLY to ONE *User*. Anm *Account* might have any
+  *balance* as long is it is equal or greater than ZERO(0).
 - **Transfer**: A *Transfer* is the movement of Money from one *Account* (origin) to another (destination). A *Transaction* can be done
-between 2 *Accounts* of this Bank, but one of the 2 *Account* (origin or destination) might belong to an *External* Bank.
+  between 2 *Accounts* of this Bank, but one of the 2 *Account* (origin or destination) might belong to an *External* Bank.
 - **Internal Account**: An Account registered in this Bank.
-- **External Account**: An Account NOT registered in this Bank. External Account are not controlled by this APi and we can NOT 
-affect the Balance of this external Accounts, but an "Account Check" is performed.
-- **Account Check**: A verification process that indicates if an *Account* can take part in a *Transaction*. An account is considered *Valid* if 
-it full fills one of 2 checks: a) it belong toi *This* bank, or b) it does **not** belong to this bank, but its *ID* complais with the "
-*External Account Id Rule*
+- **External Account**: An Account NOT registered in this Bank. External Account are not controlled by this APi and we can NOT
+  affect the Balance of this external Accounts, but an "Account Check" is performed.
+- **Account Check**: A verification process that indicates if an *Account* can take part in a *Transaction*. An account is considered *Valid* if
+  it full fills one of 2 checks: a) it belong toi *This* bank, or b) it does **not** belong to this bank, but its *ID* complais with the "
+  *External Account Id Rule*
 - **External Account Id Rule**: A rule that specifies that the *Id* of an *External Account* MUST starts with "*EXTERNAL-*".
 
 ### Hexagonal Architecture
@@ -216,7 +216,7 @@ The project is broken down into different components following a hexagonal archi
 
 ![architecture](architecture.jpg)
 
-The project contains 3 modules: *domain*, *infrastructure* and *application*, and each one is divided further 
+The project contains 3 modules: *domain*, *infrastructure* and *application*, and each one is divided further
 down following the *bounded context* defined (*User*, *Account*, *Transaction*).
 
 The *Domain* modules defines several ports:
@@ -224,7 +224,7 @@ The *Domain* modules defines several ports:
 - *[IN]*: A *Primary* port that exposes the Bank Functionality. This port will be used by the *consuming* apps/systems of this Bank.
 - *[OUT]: A *Secondary* port that defines *Storage capabilities*, needed by the Bank business logic.
 
-> NOTE: The Ports, same as with the *domain* model itself, have been broken down following the bounded contexts defined. 
+> NOTE: The Ports, same as with the *domain* model itself, have been broken down following the bounded contexts defined.
 > **It might have also been a good ide ot integrate all the [IN] ports into a unified Port, and the same for
 > the [OUT] ports**.
 
@@ -232,25 +232,25 @@ The *Domain* modules defines several ports:
 ### Implementation Details
 
 #### Java9 Modules
-The project uses *Java9* **Modules** to make a more robust distinction between all the components above. 
+The project uses *Java9* **Modules** to make a more robust distinction between all the components above.
 This allows us to define exactly what is it *visible* between different Modules
 
-#### Transaction Security and Concurrency 
+#### Transaction Security and Concurrency
 
-**Transaction** is the most important concept in a Bank. At any given time, multiple Transactions are executed, and we must ensure the consistency in the 
-balances of all Accounts involved. So we need to make sure that Transactions are executed in an ACID fashion and concurrent 
+**Transaction** is the most important concept in a Bank. At any given time, multiple Transactions are executed, and we must ensure the consistency in the
+balances of all Accounts involved. So we need to make sure that Transactions are executed in an ACID fashion and concurrent
 Transaction involving the same Account do NOT interfiere with each Other.
 
 To achieve this, we have developed a LOCK mechanism at 2 levels:
 
-- In the Business Logic Level, we define a Lock system that LOCKS an Account if that Account is being used in 
-a Transaction. Multiple Transaction can be executed in parallel, as long as they affect different Transactions. This 
-prevents some errors to happen, but it only works inside the same *Java Virtual Machine*. So for account for more security,  
-another level of security has been developed (below):
+- In the Business Logic Level, we define a Lock system that LOCKS an Account if that Account is being used in
+  a Transaction. Multiple Transaction can be executed in parallel, as long as they affect different Transactions. This
+  prevents some errors to happen, but it only works inside the same *Java Virtual Machine*. So for account for more security,  
+  another level of security has been developed (below):
 
-- In the Storage Layer, we implemented a *PESSIMISTIC LOCK* at DB level, so the *Row* of a Transaction is Locked when a 
-Transaction starts running, and it remains Locked until the Transaction is finished, so the data of that dow can not be read or Write during 
-that time.
+- In the Storage Layer, we implemented a *PESSIMISTIC LOCK* at DB level, so the *Row* of a Transaction is Locked when a
+  Transaction starts running, and it remains Locked until the Transaction is finished, so the data of that dow can not be read or Write during
+  that time.
 
 > NOTE:
 > The Lock at Business-level is implemented in *TransactionServiceImpl* and *AccountLockManager*.
