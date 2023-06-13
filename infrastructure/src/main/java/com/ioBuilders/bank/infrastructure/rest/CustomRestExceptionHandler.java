@@ -1,6 +1,8 @@
 package com.ioBuilders.bank.infrastructure.rest;
 
 import com.ioBuilders.bank.domain.account.model.AccountException;
+import com.ioBuilders.bank.domain.transaction.model.TransactionException;
+import com.ioBuilders.bank.domain.user.model.UserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -40,6 +42,24 @@ public class CustomRestExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
                 ex.getDetail());
+        return new ResponseEntity(errorApi, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({UserException.class})
+    protected ResponseEntity<RestApiError> handleUserException(UserException ex) {
+        RestApiError errorApi = new RestApiError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                "");
+        return new ResponseEntity(errorApi, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({TransactionException.class})
+    protected ResponseEntity<RestApiError> handleTransactionException(TransactionException ex) {
+        RestApiError errorApi = new RestApiError(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                "");
         return new ResponseEntity(errorApi, HttpStatus.BAD_REQUEST);
     }
 }
