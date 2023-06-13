@@ -71,9 +71,9 @@ http://localhost:8080/swagger-ui/index.html
 ```
 ## Using the REST API
 
-All the REST Endpoints returns a rich response containing the Http Status code and HATEOAS Links
-
-> NOTE: The use fo HATEOAS comes with some impact in performance. It is OK in this *POC* but in a *Production* it should be considered carefully. 
+> NOTE: 
+> All the REST Endpoints returns a rich response containing the Http Status code and HATEOAS Links
+> The use fo HATEOAS comes with some impact in performance. It is OK in this *POC* but in a *Production* it should be considered carefully. 
 
 Create a User for *Alice* and *Bob*:
 ```
