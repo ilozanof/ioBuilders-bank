@@ -30,6 +30,7 @@ Other Software needed to compile, deploy and run:
 
 ```
 - git
+- gradle
 - Docker
 - curl
 ```
@@ -98,7 +99,7 @@ curl -X POST http://localhost:8080/v1/accounts -H 'Content-Type: application/jso
 Now we are funding both account with some fictional balance with 2 transfers from some out-of-the-blue external Accounts:
 
 > NOTE: As it will explained in the *Architecture* Chapter, a *deposit* is considered like a regular Transaction, but the
-> *Origin Transaction* if from an *EXTERNAL* Account.
+> *Origin Transaction* is coming from an *EXTERNAL* Account.
 ```
 curl -X POST http://localhost:8080/v1/transactions -H 'Content-Type: application/json' -d '{"originAccountId":"EXTERNAL-xxx", "destinationAccountId": "IBAN-xxxx-xxxx-xxx-1", "amount": 1000, "date": "2024-01-01"}'
 ```
@@ -208,6 +209,8 @@ and the *Technical Part*: We have defined the following concepts:
   it full fills one of 2 checks: a) it belongs to *This* bank, or b) it does **not** belong to this bank, but its *ID* complies with the 
   *External Account Id Rule*
 - **External Account Id Rule**: A rule that specifies that the *Id* of an *External Account* MUST starts with "*EXTERNAL-*".
+- **Deposit**: A *Deposit* is treated like any other *Transaction*. but in this case the *Origin Transaction* is coming from 
+ an *External Account*.
 
 ### Hexagonal Architecture
 
@@ -252,29 +255,32 @@ To achieve this, we have developed a LOCK mechanism at 2 levels:
   Transaction starts running, and it remains Locked until the Transaction is finished, so the data of that dow can not be read or Write during
   that time.
 
-#### Other Security Considerations
-During Testing, it very frequent that we need to *remove* or *clean* the data between tests. So there is usually a 
-"*clean()*", "*removeAll()*" or similar method in our Services. This is ok as long as the development team is aware that 
-those methods SHOULD NOT be used in Production code, ever.
-
-If we want to make this more strict, we can **remove** those methods from the */main* module and add them *ONLY* to the 
-*/test* module. This is also ok since those methods can never be run in Production, since a lot of security checks must 
-be followed nd we'll *never* remove the whole set of *Users/Account/Transaction", but selectively instead. In this projects, 
-these "*dangerous*" methods have been added to specific classes used only for Testing: *AccountStoreForTesting*, *TransactionStoreForTesting* 
-and *UserStoreForTesting*.
-
 
 > NOTE:
 > The Lock at Business-level is implemented in *TransactionServiceImpl* and *AccountLockManager*.
 
 
 #### Other Security Considerations
-During Testing, it very frequent that we need to *remove* or *clean* the data between tests. So there is usually a 
-"*clean()*", "*removeAll()*" or similar method in our Services. This is ok as long as the development team is aware that 
+During Testing, it's very frequent that we need to *remove* or *clean* the data between tests. So there is usually a 
+"*clean()*", "*removeAll()*" or similar method in our Services. This is OK as long as the development team is aware that 
 those methods SHOULD NOT be used in Production code, ever.
 
 If we want to make this more strict, we can **remove** those methods from the */main* module and add them *ONLY* to the 
 */test* module. This is also ok since those methods can never be run in Production, since a lot of security checks must 
-be followed nd we'll *never* remove the whole set of *Users/Account/Transaction", but selectively instead. In this projects, 
+be followed nd we'll *never* remove the whole set of *Users/Account/Transaction", but selectively instead. In this project, 
 these "*dangerous*" methods have been added to specific classes used only for Testing: *AccountStoreForTesting*, *TransactionStoreForTesting* 
 and *UserStoreForTesting*.
+
+#### Test Code Coverage
+The Test code coverage of this POC doesn't cover all possibilities, but it rather tries to show *What* is important is test:
+
+- In the **domain** module, only the domain logic should be tested. The logic of making calls to the *Store* and
+ retrieving data is *NOT* subject of this coverage. For that reason, in this project we are only testing *TransactionServiceImpl*, 
+which contains the logic to control concurrency and Account-based Locking.
+- In the *infrastructure* package we test the logic of the different *Adapters. In this case we have 2: *rest* and *store*.
+
+- The tests in the *storage* module check that data is saved and retrieved from the Store properly.
+- The tests in the *rest* module check that the REST layer works properly. The integrity of the data and the business logic is 
+tested in their respective modules, so here we test only the aspects related to REST: Status OpCodes returned, Content-Type response format, etc.
+
+> NOTE: Integration tests are missing for time constrains. The *application* layer might be a good place for them 
