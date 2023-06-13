@@ -64,7 +64,7 @@ Now we can run the App in a Container:
 ```
 docker run -p  8080:8080 -d iobuilders/bank
 ```
-The Project includes an *OpenAPI* online Documentation which can be access using a browser in this url:
+The Project includes an *OpenAPI* online Documentation which can be accessed using a browser in this url:
 ```
 http://localhost:8080/swagger-ui/index.html
 
