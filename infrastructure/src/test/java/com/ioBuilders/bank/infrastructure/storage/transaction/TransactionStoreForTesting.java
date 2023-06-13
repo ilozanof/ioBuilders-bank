@@ -1,12 +1,11 @@
 package com.ioBuilders.bank.infrastructure.storage.transaction;
 
-import com.ioBuilders.bank.infrastructure.storage.transaction.TransactionJpaStore;
-import com.ioBuilders.bank.infrastructure.storage.transaction.TransactionStore;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author i.fernandez@nchain.com
- * Copyright (c) 2018-2023 nChain Ltd
+ *
+ * This Store adds other meethods useful for testing but too "dangerous" to be included in the "main" codebase.
  */
 public class TransactionStoreForTesting extends TransactionStore {
     @Autowired
